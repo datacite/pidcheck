@@ -14,5 +14,9 @@ class PIDCheck(scrapy.Item):
     redirect_urls = scrapy.Field()
     download_latency = scrapy.Field()
     checked_date = scrapy.Field()
+    schema_org = scrapy.Field()
+    http_status = scrapy.Field()
+    pid_meta_match = scrapy.Field()
+    pid_meta_different = scrapy.Field()
+
     problems = scrapy.Field()
-    schema = scrapy.Field()

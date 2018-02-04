@@ -26,51 +26,30 @@ class PidSpider(scrapy.Spider):
         pid_check['checked_date'] = datetime.now()
 
         # Store extra HTTP data from the response
-
         pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
         pid_check['redirect_urls'] = response.meta.get('redirect_urls', [])
         pid_check['download_latency'] = response.meta.get('download_latency', 0) * 1000 # Ms
 
-        problems = []
+        # Store http status
+        pid_check['http_status'] = response.status
 
-        # Handle if we have a DOI(pid?) in the URL, extract it, does it match what the metadata tells us
-
-        # Check HTTP Status codes for possible problems
-        problems += self.check_http_status(response.status)
-
-        # Extract Schema.org json ld
+        # Extract schema.org json ld
         extractor = JsonLdExtractor()
-        schema = extractor.extract(response.body_as_unicode(), response.url)
-        pid_check['schema'] = schema
-
-        # Check schema
-        problems += self.check_schema(schema)
-
-        # Add details to the link result
-        pid_check['problems'] = problems
+        schema_org = extractor.extract(response.body_as_unicode(), response.url)
+        pid_check['schema_org'] = schema_org
 
         self.log('hit %s' % response.url)
         yield pid_check
 
-    def check_http_status(self, status):
-        problems = []
-
+    def parse_http_status(self, status):
+        error_codes = []
+        errored = False
         # Check for regular 404
         if status == 404:
-            problems.append("Http 404, not found")
+            errored = True
+            error_codes.append(404)
+        elif status == 500:
+            errored = True
+            error_codes.append(500)
 
-        return problems
-
-    def check_schema(self, schema):
-        problems = []
-
-        if schema:
-            # Look for a PID ID
-            pid = schema[0].get('@id')
-
-            if not pid:
-                problems.append("PID Missing in JsonLD schema.org metadata")
-        else:
-            problems.append("Missing embedded schema.org metadata")
-
-        return problems
+        return errored, error_codes
