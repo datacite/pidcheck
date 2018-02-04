@@ -10,6 +10,7 @@ class PidSpider(scrapy.Spider):
     def start_requests(self):
         urls = [
             'https://doi.org/10.5438/msk0-7250',
+            'https://blog.datacite.org/datacite-hiring-another-application-developer/',
             'https://doi.org/10.5438/ea4h-tx3g'
         ]
 
@@ -19,8 +20,7 @@ class PidSpider(scrapy.Spider):
     def parse(self, response):
         pid_check = PIDCheck()
 
-        pid_check['request_url'] = response.request.url
-        pid_check['response_url'] = response.url
+        pid_check['checked_url'] = response.url
         pid_check['checked_date'] = datetime.now()
 
         # Store extra HTTP data from the response
