@@ -19,8 +19,15 @@ class PidSpider(scrapy.Spider):
     def parse(self, response):
         pid_check = PIDCheck()
 
-        pid_check['url'] = response.url
+        pid_check['request_url'] = response.request.url
+        pid_check['response_url'] = response.url
         pid_check['checked_date'] = datetime.now()
+
+        # Store extra HTTP data from the response
+
+        pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
+        pid_check['redirect_urls'] = response.meta.get('redirect_urls', [])
+        pid_check['download_latency'] = response.meta.get('download_latency', 0) * 1000 # Ms
 
         problems = []
 

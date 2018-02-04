@@ -8,7 +8,11 @@
 import scrapy
 
 class PIDCheck(scrapy.Item):
-    url = scrapy.Field()
+    request_url = scrapy.Field()
+    response_url = scrapy.Field()
+    redirect_count = scrapy.Field()
+    redirect_urls = scrapy.Field()
+    download_latency = scrapy.Field()
     checked_date = scrapy.Field()
     problems = scrapy.Field()
     schema = scrapy.Field()
