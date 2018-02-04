@@ -1,24 +1,22 @@
 import scrapy
+import json
 from datetime import datetime
 from extruct.jsonld import JsonLdExtractor
 from pidcheck.items import PIDCheck
 
 class PidSpider(scrapy.Spider):
     name = "pid"
+    url_file = 'urls.jl'
     handle_httpstatus_list = [404, 500] # Tell scrapy to not ignore these codes
 
     def start_requests(self):
 
-        urls = [
-            { 'pid': 'msk0-7250', 'url': 'https://doi.org/10.5438/msk0-7250' },
-            { 'pid': 'msk0-7250', 'url': 'https://blog.datacite.org/datacite-hiring-another-application-developer/' },
-            { 'pid': 'ea4h-tx3g', 'url': 'https://doi.org/10.5438/ea4h-tx3g' }
-        ]
-
-        for url in urls:
-            request = scrapy.Request(url=url['url'], callback=self.parse)
-            request.meta['pid'] = url['pid']
-            yield request
+        with open(self.url_file) as f:
+            for jl in f:
+                url = json.loads(jl)
+                request = scrapy.Request(url=url['url'], callback=self.parse)
+                request.meta['pid'] = url['pid']
+                yield request
 
     def parse(self, response):
         pid_check = PIDCheck()
