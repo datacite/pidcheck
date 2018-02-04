@@ -8,6 +8,7 @@
 import scrapy
 
 class PIDCheck(scrapy.Item):
+    pid = scrapy.Field()
     checked_url = scrapy.Field()
     redirect_count = scrapy.Field()
     redirect_urls = scrapy.Field()
