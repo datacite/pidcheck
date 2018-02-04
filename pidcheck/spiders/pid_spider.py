@@ -40,16 +40,3 @@ class PidSpider(scrapy.Spider):
 
         self.log('hit %s' % response.url)
         yield pid_check
-
-    def parse_http_status(self, status):
-        error_codes = []
-        errored = False
-        # Check for regular 404
-        if status == 404:
-            errored = True
-            error_codes.append(404)
-        elif status == 500:
-            errored = True
-            error_codes.append(500)
-
-        return errored, error_codes
