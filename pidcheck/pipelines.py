@@ -19,6 +19,5 @@ class PIDMetadataPipeline():
 
 
 class PIDScorePipeline():
-    """
     def process_item(self, item, spider):
         pass
