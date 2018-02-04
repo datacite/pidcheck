@@ -35,8 +35,11 @@ class PidSpider(scrapy.Spider):
 
         # Extract schema.org json ld
         extractor = JsonLdExtractor()
-        schema_org = extractor.extract(response.body_as_unicode(), response.url)
+        schema_org = extractor.extract(response.body, response.url)
         pid_check['schema_org'] = schema_org
+
+        # Extract all identifiers listed with dublin core syntax.
+        pid_check['dc_identifiers'] = response.xpath("//meta[@name='DC.identifier']/@content").extract()
 
         self.log('hit %s' % response.url)
         yield pid_check

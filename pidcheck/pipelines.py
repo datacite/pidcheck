@@ -15,6 +15,12 @@ class PIDMetadataPipeline():
             else:
                 item['pid_meta_different'].append('schema_org')
 
+        for id in item['dc_identifiers']:
+            if item['pid'] in id:
+                item['pid_meta_match'].append('dc.identifier')
+            else:
+                item['pid_meta_different'].append('dc.identifier')
+
         return item
 
 
