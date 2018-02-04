@@ -7,8 +7,8 @@
 
 import scrapy
 
-
-class PidcheckItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class PIDCheck(scrapy.Item):
+    url = scrapy.Field()
+    checked_date = scrapy.Field()
+    problems = scrapy.Field()
+    schema = scrapy.Field()

@@ -1,6 +1,7 @@
 import scrapy
 from datetime import datetime
 from extruct.jsonld import JsonLdExtractor
+from pidcheck.items import PIDCheck
 
 class PidSpider(scrapy.Spider):
     name = "pid"
@@ -16,12 +17,10 @@ class PidSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        link_result = {
-            'url': response.url,
-            'checked_date': datetime.now(),
-            'quality_score': None,
-            'problems': []
-        }
+        pid_check = PIDCheck()
+
+        pid_check['url'] = response.url
+        pid_check['checked_date'] = datetime.now()
 
         problems = []
 
@@ -33,15 +32,16 @@ class PidSpider(scrapy.Spider):
         # Extract Schema.org json ld
         extractor = JsonLdExtractor()
         schema = extractor.extract(response.body_as_unicode(), response.url)
+        pid_check['schema'] = schema
 
         # Check schema
         problems += self.check_schema(schema)
 
         # Add details to the link result
-        link_result['problems'] = problems
+        pid_check['problems'] = problems
 
         self.log('hit %s' % response.url)
-        yield link_result
+        yield pid_check
 
     def check_http_status(self, status):
         problems = []
