@@ -1,0 +1,2 @@
+extruct==0.4.0
+Scrapy==1.5.0
