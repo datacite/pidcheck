@@ -6,10 +6,14 @@ class PidSpider(scrapy.Spider):
     name = "pid"
     handle_httpstatus_list = [404, 500] # Tell scrapy to not ignore these codes
 
-    start_urls = (
-        'https://doi.org/10.5438/msk0-7250',
-        'https://doi.org/10.5438/ea4h-tx3g'
-    )
+    def start_requests(self):
+        urls = [
+            'https://doi.org/10.5438/msk0-7250',
+            'https://doi.org/10.5438/ea4h-tx3g'
+        ]
+
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         link_result = {
@@ -20,6 +24,9 @@ class PidSpider(scrapy.Spider):
         }
 
         problems = []
+
+        # Handle if we have a DOI(pid?) in the URL, extract it, does it match what the metadata tells us
+
         # Check HTTP Status codes for possible problems
         problems += self.check_http_status(response.status)
 
@@ -29,7 +36,6 @@ class PidSpider(scrapy.Spider):
 
         # Check schema
         problems += self.check_schema(schema)
-
 
         # Add details to the link result
         link_result['problems'] = problems
