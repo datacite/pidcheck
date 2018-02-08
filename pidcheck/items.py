@@ -15,6 +15,7 @@ class PIDCheck(scrapy.Item):
     download_latency = scrapy.Field()
     checked_date = scrapy.Field()
     schema_org = scrapy.Field()
+    schema_org_id = scrapy.Field()
     dc_identifier = scrapy.Field()
     citation_doi = scrapy.Field()
     http_status = scrapy.Field()

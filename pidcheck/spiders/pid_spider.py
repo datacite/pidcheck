@@ -27,7 +27,20 @@ class PidMixin():
         # Extract schema.org json ld
         extractor = JsonLdExtractor()
         schema_org = extractor.extract(response.body, response.url)
-        pid_check['schema_org'] = schema_org
+
+        pid_check['schema_org_id'] = None
+        if schema_org:
+            # Technically there can be multiple schema_org json LD sections,
+            # but in practice there will likely only be one that makes sense.
+            # So pick the first out of the list as our schema
+            pid_check['schema_org'] = schema_org[0]
+
+            # The schema has two distinct definitions for identifiers,
+            # @id seems to be for usecases where it is a URI only,
+            # however some still suggest using 'identifier'
+            pid_check['schema_org_id'] = pid_check['schema_org'].get('@id')
+            if not pid_check['schema_org_id']:
+                pid_check['schema_org_id'] = pid_check['schema_org'].get('identifier')
 
         # Extract all identifiers listed with dublin core syntax.
         pid_check['dc_identifier'] = response.xpath("//meta[@name='DC.identifier']/@content").extract_first()
