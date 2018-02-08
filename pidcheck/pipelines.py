@@ -7,10 +7,15 @@ class PIDMetadataPipeline():
 
         # Look for a PID ID matches in schema org metadata
         for schema in item['schema_org']:
+            # The schema has two distinct definitions for identifiers,
+            # @id seems to be for usecases where it is a URI only,
+            # however some still suggest using 'identifier'
             id = schema.get('@id')
+            identifier = schema.get('identifier')
 
             # Check if the ID matches our known PID
-            if id and item['pid'] in id:
+            if id and item['pid'] in id or \
+                identifier and item['pid'] in identifier:
                 item['pid_meta_match'].append('schema_org')
             else:
                 item['pid_meta_different'].append('schema_org')
