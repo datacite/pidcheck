@@ -4,19 +4,8 @@ from datetime import datetime
 from extruct.jsonld import JsonLdExtractor
 from pidcheck.items import PIDCheck
 
-class PidSpider(scrapy.Spider):
-    name = "pid"
-    url_file = 'urls.jl'
+class PidMixin():
     handle_httpstatus_list = [404, 500] # Tell scrapy to not ignore these codes
-
-    def start_requests(self):
-
-        with open(self.url_file) as f:
-            for jl in f:
-                url = json.loads(jl)
-                request = scrapy.Request(url=url['url'], callback=self.parse)
-                request.meta['pid'] = url['pid']
-                yield request
 
     def parse(self, response):
         pid_check = PIDCheck()
@@ -43,3 +32,16 @@ class PidSpider(scrapy.Spider):
 
         self.log('hit %s' % response.url)
         yield pid_check
+
+
+class PidJLSpider(PidMixin, scrapy.Spider):
+    name = "pidcheck-jl"
+    url_file = 'urls.jl'
+
+    def start_requests(self):
+        with open(self.url_file) as f:
+            for jl in f:
+                url = json.loads(jl)
+                request = scrapy.Request(url=url['url'], callback=self.parse)
+                request.meta['pid'] = url['pid']
+                yield request
