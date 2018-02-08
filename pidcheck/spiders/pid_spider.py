@@ -1,5 +1,7 @@
 import scrapy
 import json
+from scrapy_redis.spiders import RedisSpider
+from scrapy_redis.utils import bytes_to_str
 from datetime import datetime
 from extruct.jsonld import JsonLdExtractor
 from twisted.internet.error import DNSLookupError
@@ -61,7 +63,6 @@ class PidMixin():
             self.logger.error('TimeoutError on %s', request.url)
 
 
-
 class PidJLSpider(PidMixin, scrapy.Spider):
     name = "pidcheck-jl"
     url_file = 'urls.jl'
@@ -73,3 +74,13 @@ class PidJLSpider(PidMixin, scrapy.Spider):
                 request = scrapy.Request(url=url['url'], callback=self.parse)
                 request.meta['pid'] = url['pid']
                 yield request
+
+
+class PidSpider(PidMixin, RedisSpider):
+    name = "pidcheck"
+
+    def make_request_from_data(self, data):
+        url = json.loads(bytes_to_str(data, self.redis_encoding))
+        request = scrapy.Request(url=url['url'], callback=self.parse)
+        request.meta['pid'] = url['pid']
+        return request
