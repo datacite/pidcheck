@@ -2,6 +2,8 @@ import scrapy
 import json
 from datetime import datetime
 from extruct.jsonld import JsonLdExtractor
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 from pidcheck.items import PIDCheck
 
 class PidMixin():
@@ -28,10 +30,23 @@ class PidMixin():
         pid_check['schema_org'] = schema_org
 
         # Extract all identifiers listed with dublin core syntax.
-        pid_check['dc_identifiers'] = response.xpath("//meta[@name='DC.identifier']/@content").extract()
+        pid_check['dc_identifier'] = response.xpath("//meta[@name='DC.identifier']/@content").extract_first()
 
-        self.log('hit %s' % response.url)
+        # Extract citation_doi metadata
+        pid_check['citation_doi'] = response.xpath("//meta[@name='citation_doi']/@content").extract_first()
+
         yield pid_check
+
+    def errback_httpbin(self, failure):
+        if failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)
+
 
 
 class PidJLSpider(PidMixin, scrapy.Spider):

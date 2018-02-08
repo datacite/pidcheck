@@ -20,11 +20,20 @@ class PIDMetadataPipeline():
             else:
                 item['pid_meta_different'].append('schema_org')
 
-        for id in item['dc_identifiers']:
-            if item['pid'] in id:
+        # Check dublin core for metadata matches
+        if item['dc_identifier']:
+            if item['pid'] in item['dc_identifier']:
                 item['pid_meta_match'].append('dc.identifier')
             else:
                 item['pid_meta_different'].append('dc.identifier')
+
+        # Check to see if we match in the citation_doi metadata
+        if item['citation_doi']:
+            if item['pid'] in item['citation_doi']:
+                item['pid_meta_match'].append('citation_doi')
+            else:
+                item['pid_meta_different'].append('citation_doi')
+
 
         return item
 
