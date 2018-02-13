@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+# Load in environment variables from a .env file if it exists
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
 # Scrapy settings for pidcheck project
 #
 # For simplicity, this file contains only settings considered important or
@@ -137,8 +145,8 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 #REDIS_ITEMS_SERIALIZER = 'json.dumps'
 
 # Specify the host and port to use when connecting to Redis (optional).
-#REDIS_HOST = 'localhost'
-#REDIS_PORT = 6379
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 
 # Specify the full Redis URL for connecting (optional).
 # If set, this takes precedence over the REDIS_HOST and REDIS_PORT settings.
