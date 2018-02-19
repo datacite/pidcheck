@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  crawler:
+    image: pidcheck_crawler
+    build:
+      context: .
+      dockerfile: docker/crawler/Dockerfile
