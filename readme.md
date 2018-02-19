@@ -17,6 +17,10 @@ For starting a version of the crawler and a redis, you can just do regular
 For debugging purposes you can use the seperate debug compose file
 `docker-compose -f docker-compose.debug.yml up`
 
+With this running you can push data into redis using redis-cli:
+
+`src/redis-cli -p 32769 lpush pidcheck:start_urls '{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }'`
+
 # Development
 
 ## Requirements
