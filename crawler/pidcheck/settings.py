@@ -17,14 +17,18 @@ load_dotenv(dotenv_path)
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'pidcheck'
+# Logging
+# See https://docs.scrapy.org/en/latest/topics/logging.html
+LOG_LEVEL=os.getenv('LOG_LEVEL', 'INFO')
 
+# Basic
+BOT_NAME = 'pidcheck'
 SPIDER_MODULES = ['pidcheck.spiders']
 NEWSPIDER_MODULE = 'pidcheck.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'pidcheck (+http://www.yourdomain.com)'
+# e.g. 'pidcheck (+http://www.yourdomain.com)'
+USER_AGENT = os.getenv('USER_AGENT', 'pidcheck')
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -50,7 +54,7 @@ DOWNLOAD_TIMEOUT = 15
 COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {

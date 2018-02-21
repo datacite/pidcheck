@@ -9,6 +9,8 @@ services:
     depends_on:
       - redis
     restart: always
+    environment:
+      - LOG_LEVEL=DEBUG
 
   redis:
     image: redis
