@@ -50,6 +50,10 @@ class PidMixin():
         # Extract citation_doi metadata
         pid_check['citation_doi'] = response.xpath("//meta[@name='citation_doi']/@content").extract_first()
 
+        # Try looking for the pid in the body
+        pid_text = response.xpath("//*[contains(text(), '{0}')]".format(pid_check['pid'])).extract_first()
+        pid_check['body_has_pid'] = pid_text != None
+
         yield pid_check
 
     def errback_httpbin(self, failure):

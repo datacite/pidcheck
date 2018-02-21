@@ -21,5 +21,6 @@ class PIDCheck(scrapy.Item):
     http_status = scrapy.Field()
     pid_meta_match = scrapy.Field()
     pid_meta_different = scrapy.Field()
+    body_has_pid = scrapy.Field()
 
     problems = scrapy.Field()
