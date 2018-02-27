@@ -2,18 +2,18 @@ version: '2'
 
 services:
   crawler:
-    image: pidcheck_crawler
+    image: datacite/pidcheck-crawler
     build:
       context: .
       dockerfile: docker/crawler/Dockerfile
     depends_on:
       - redis
     restart: always
-    environment:
-      - LOG_LEVEL=DEBUG
+    env_file:
+      - .env
 
   redis:
     image: redis
     ports:
-      - "6379"
+      - 6379:6379
     restart: always
