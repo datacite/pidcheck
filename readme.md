@@ -19,7 +19,7 @@ For debugging purposes you can use the seperate debug compose file
 
 With this running you can push data into redis using redis-cli:
 
-`src/redis-cli -p 32769 lpush pidcheck:start_urls '{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }'`
+`src/redis-cli -p 6379 lpush pidcheck:start_urls '{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }'`
 
 ## Settings
 
