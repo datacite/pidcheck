@@ -114,8 +114,9 @@ AJAXCRAWL_ENABLED = True
 # Enables scheduling storing requests queue in redis.
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
-# Ensure all spiders share same duplicates filter through redis.
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# Disable duplication filtering, we always want our spiders to be able to
+# recrawl links
+DUPEFILTER_CLASS = 'pidcheck.dupefilter.PidDupeFilter'
 
 # Default requests serializer is pickle, but it can be changed to any module
 # with loads and dumps functions. Note that pickle is not compatible between
