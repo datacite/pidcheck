@@ -44,16 +44,6 @@ not the redis one.*
 
 `pip install -r requirements.txt`
 
-## CLI Run:
+## Scrapy
 
-From the crawler directory you can use the non redis version:
-
-`scrapy crawl pidcheck-jl -a url_file=urls.jl -o test.jl`
-
-url_file - An input filename for a json lines file that looks like:
-
-```
-{ "pid": "msk0-7250", "url": "https://doi.org/10.5438/msk0-7250" }
-{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }
-{ "pid": "ea4h-tx3g", "url": "https://doi.org/10.5438/ea4h-tx3g" }
-```
+It is a scrapy project so regular scrapy crawl commands should work.
