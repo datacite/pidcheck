@@ -8,6 +8,8 @@ import logging
 
 # Basic settings
 START_URLS_KEY = os.getenv('START_URLS_KEY', 'pidcheck:start_urls')
+RESULTS_ITEMS_KEY = os.getenv('REDIS_ITEMS_KEY', 'pidcheck:items')
+
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 
@@ -20,8 +22,16 @@ def push_pid(pid, url):
     logging.info("Queueing '{0}' with url '{1}' for processing".format(pid, url))
     redis.lpush(START_URLS_KEY, json.dumps(pl))
 
-def get_pid_result(pid):
-    pass
+def pop_result():
+    """Pop one pidcheck result from redis"""
+    result = json.loads(redis.rpop(RESULTS_ITEMS_KEY))
+    logging.info("Popped result for '{0}' with url '{1}'".format(result['pid'], result['checked_url']))
+    return result
 
-def aggregate():
-    pass
+def pop_current_results():
+    """Retrieve current batch of results from the redis server"""
+    results = []
+    for i in range( redis.llen(RESULTS_ITEMS_KEY) ):
+        results.append(pop_result())
+
+    return results
