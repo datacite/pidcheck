@@ -19,7 +19,7 @@ fi
 
 echo "Tagging builds with ":$TAG
 
-docker build --rm -f docker/crawler/Dockerfile -t 'datacite/crawler':$TAG .
+docker build --quiet --rm -f docker/crawler/Dockerfile -t 'datacite/pidcheck-crawler':$TAG .
 
 # Run tests within the docker builds
 # TODO
@@ -28,6 +28,6 @@ docker build --rm -f docker/crawler/Dockerfile -t 'datacite/crawler':$TAG .
 # Don't push other branches by default
 
 if [ "$TRAVIS_BRANCH" = "master" ] || [ "$TRAVIS_TAG" ]; then
-    docker push 'datacite/crawler':$TAG;
-    echo "Pushed docker image to" 'datacite/crawler':$TAG;
+    docker push 'datacite/pidcheck-crawler':$TAG;
+    echo "Pushed docker image to" 'datacite/pidcheck-crawler':$TAG;
 fi
