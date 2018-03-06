@@ -24,9 +24,13 @@ def push_pid(pid, url):
 
 def pop_result():
     """Pop one pidcheck result from redis"""
-    result = json.loads(redis.rpop(RESULTS_ITEMS_KEY))
-    logging.info("Popped result for '{0}' with url '{1}'".format(result['pid'], result['checked_url']))
-    return result
+    raw = redis.rpop(RESULTS_ITEMS_KEY)
+    if raw:
+        result = json.loads(raw)
+        logging.info("Popped result for '{0}' with url '{1}'".format(result['pid'], result['checked_url']))
+        return result
+    else:
+        return None
 
 def pop_current_results():
     """Retrieve current batch of results from the redis server"""
