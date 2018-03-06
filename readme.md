@@ -34,6 +34,28 @@ It is possible to use a .env file for changing these settings as well.
 *Note specifying a different redis, you will want to use only the crawler docker image and
 not the redis one.*
 
+# Usage
+
+## Seeding
+
+The redis has a SEED_URL key in the format of: "pidcheck:start_urls".
+You can push directly using the redis-cli:
+```src/redis-cli -p 6379 lpush pidcheck:start_urls '{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }'```
+
+For conveniance there is also a scripts/seed.py that can take either a json lines format with each line being a json object:
+```'{ "pid": "msk0-7250", "url": "https://blog.datacite.org/datacite-hiring-another-application-developer/" }'```
+
+or accepts a CSV file with the columns being: pid, url
+
+Example:
+```python scripts/seed.py myurls.csv```
+
+## Data Dump
+
+To retrieve the results from the scraping you can use the dump.py script to output the data:
+
+```python scripts/dump.py mydata.csv```
+
 # Development
 
 ## Requirements
