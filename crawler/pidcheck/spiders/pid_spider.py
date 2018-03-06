@@ -32,6 +32,7 @@ class PidMixin():
         schema_org = extractor.extract(response.body, response.url)
 
         pid_check['schema_org_id'] = None
+        pid_check['schema_org'] = None
         if schema_org:
             # Technically there can be multiple schema_org json LD sections,
             # but in practice there will likely only be one that makes sense.
