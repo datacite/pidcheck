@@ -16,12 +16,17 @@ def dump_csv(filename):
         # Just use the first results keys as field names,
         # note this isn't a guaranteed order
         result = pidcheck.pop_result()
-        w = csv.DictWriter(f, result.keys())
-        w.writeheader()
+        if result:
+            w = csv.DictWriter(f, result.keys())
+            w.writeheader()
 
-        while result:
-            w.writerow(result)
-            result = pidcheck.pop_result()
+            while result:
+                w.writerow(result)
+                result = pidcheck.pop_result()
+
+            logging.info("Wrote data to " + filename)
+        else:
+            logging.info("No items found, nothing to dump")
 
 
 if __name__ == '__main__':
@@ -32,5 +37,3 @@ if __name__ == '__main__':
         dump_csv(filename)
     else:
         raise Exception("No known handling for extension")
-
-    logging.info("Wrote to " + filename)
