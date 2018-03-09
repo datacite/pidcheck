@@ -14,10 +14,11 @@ class PIDMetadataIDPipeline():
 
         for type in metadata_types:
             if type in item:
-                if item['pid'] in item[type]:
-                    item['pid_meta_match'].append(type)
-                else:
-                    item['pid_meta_different'].append(type)
+                if item[type]:
+                    if item['pid'] in item[type]:
+                        item['pid_meta_match'].append(type)
+                    else:
+                        item['pid_meta_different'].append(type)
 
         return item
 

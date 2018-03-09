@@ -7,7 +7,7 @@
 
 import scrapy
 
-class PIDCheck(scrapy.Item):
+class PidCheckResult(scrapy.Item):
     pid = scrapy.Field()
     checked_url = scrapy.Field()
     redirect_count = scrapy.Field()
@@ -22,5 +22,4 @@ class PIDCheck(scrapy.Item):
     pid_meta_match = scrapy.Field()
     pid_meta_different = scrapy.Field()
     body_has_pid = scrapy.Field()
-
-    problems = scrapy.Field()
+    error = scrapy.Field()
