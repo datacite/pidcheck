@@ -13,11 +13,24 @@ logging.basicConfig(level=logging.INFO)
 def dump_csv(filename):
     """Write to results to CSV"""
     with open(filename, 'w') as f:
-        # Just use the first results keys as field names,
-        # note this isn't a guaranteed order
+
+        fields = [
+            'pid',
+            'checked_url',
+            'http_status',
+            'error',
+            'checked_date',
+            'schema_org_id',
+            'dc_identifier',
+            'citation_doi',
+            'pid_meta_match',
+            'pid_meta_different',
+            'body_has_pid'
+        ]
+
         result = pidcheck.pop_result()
         if result:
-            w = csv.DictWriter(f, result.keys())
+            w = csv.DictWriter(f, fields, extrasaction='ignore')
             w.writeheader()
 
             while result:
