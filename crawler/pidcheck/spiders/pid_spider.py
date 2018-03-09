@@ -19,6 +19,7 @@ class PidMixin():
         pid_check['pid'] = response.meta['pid']
         pid_check['checked_url'] = response.url
         pid_check['checked_date'] = datetime.now()
+        pid_check['error'] = ''
 
         # Store extra HTTP data from the response
         pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
