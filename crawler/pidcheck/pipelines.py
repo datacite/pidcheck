@@ -13,7 +13,7 @@ class PIDMetadataIDPipeline():
         ]
 
         for type in metadata_types:
-            if item[type]:
+            if type in item:
                 if item['pid'] in item[type]:
                     item['pid_meta_match'].append(type)
                 else:
