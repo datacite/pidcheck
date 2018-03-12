@@ -82,7 +82,7 @@ class PidMixin():
         elif failure.check(TimeoutError, TCPTimedOutError, ConnectError):
             pid_check['error'] = "Timeout"
             self.logger.error('TimeoutError on %s', request.url)
-        elif failure.check(scrapy.exceptions.IgnoreRequest)
+        elif failure.check(scrapy.exceptions.IgnoreRequest):
             pid_check['error'] = 'Request Ignored'
         else:
             pid_check['error'] = "Unknown error " + repr(failure)
