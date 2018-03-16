@@ -25,12 +25,13 @@ class PidMixin():
         pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
         pid_check['redirect_urls'] = response.meta.get('redirect_urls', [])
         pid_check['download_latency'] = response.meta.get('download_latency', 0) * 1000 # Ms
+        pid_check['content_type'] = response.headers.get('content-type').decode('ascii')
 
         # Store http status
         pid_check['http_status'] = response.status
 
         # Only do body extraction if we got something in the body
-        if response.body:
+        if response.body and pid_check['content_type'].startswith('text/html'):
             # Extract schema.org json ld
             extractor = JsonLdExtractor()
             schema_org = extractor.extract(response.body, response.url)

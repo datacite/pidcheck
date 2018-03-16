@@ -23,3 +23,4 @@ class PidCheckResult(scrapy.Item):
     pid_meta_different = scrapy.Field()
     body_has_pid = scrapy.Field()
     error = scrapy.Field()
+    content_type = scrapy.Field()
