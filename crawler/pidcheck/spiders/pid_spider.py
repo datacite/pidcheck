@@ -10,6 +10,17 @@ from twisted.internet.error import DNSLookupError
 from twisted.internet.error import TimeoutError, TCPTimedOutError, ConnectError
 from pidcheck.items import PidCheckResult
 
+# Configure logstash formatted logs
+import logging
+from logstash_formatter import LogstashFormatterV1
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = LogstashFormatterV1()
+
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 class PidMixin():
     handle_httpstatus_list = [404] # Tell scrapy to not ignore these codes
 
