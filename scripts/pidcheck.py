@@ -32,6 +32,20 @@ def pop_result():
     else:
         return None
 
+def results_length():
+    length = redis.llen(RESULTS_ITEMS_KEY)
+    return length
+
+def get_result(index):
+    raw = redis.lrange(RESULTS_ITEMS_KEY, index, index)[0]
+
+    if raw:
+        result = json.loads(raw)
+        logging.info("Got result for '{0}' with url '{1}'".format(result['pid'], result['checked_url']))
+        return result
+    else:
+        return None
+
 def pop_current_results():
     """Retrieve current batch of results from the redis server"""
     results = []

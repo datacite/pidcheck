@@ -28,18 +28,18 @@ def dump_csv(filename):
             'body_has_pid'
         ]
 
-        result = pidcheck.pop_result()
-        if result:
-            w = csv.DictWriter(f, fields, extrasaction='ignore')
-            w.writeheader()
+        w = csv.DictWriter(f, fields, extrasaction='ignore')
+        w.writeheader()
 
-            while result:
+        total = pidcheck.results_length()
+        for i in range(total):
+            result = pidcheck.get_result(i)
+            if result:
                 w.writerow(result)
-                result = pidcheck.pop_result()
 
-            logging.info("Wrote data to " + filename)
-        else:
-            logging.info("No items found, nothing to dump")
+                logging.info("Wrote data to " + filename)
+            else:
+                logging.info("No items found, nothing to dump")
 
 
 if __name__ == '__main__':
