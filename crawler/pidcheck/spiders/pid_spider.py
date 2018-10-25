@@ -82,6 +82,7 @@ class PidMixin():
 
         pid_check['pid'] = request.meta['pid']
         pid_check['checked_url'] = request.url
+        pid_check['checked_date'] = datetime.now()
         pid_check['error'] = ''
 
         if failure.check(HttpError):
