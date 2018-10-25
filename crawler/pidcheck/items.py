@@ -13,6 +13,7 @@ class PidCheckResult(scrapy.Item):
     redirect_count = scrapy.Field()
     redirect_urls = scrapy.Field()
     download_latency = scrapy.Field()
+    retry_times = scrapy.Field()
     checked_date = scrapy.Field()
     schema_org = scrapy.Field()
     schema_org_id = scrapy.Field()

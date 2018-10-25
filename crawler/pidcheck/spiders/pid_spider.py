@@ -36,6 +36,7 @@ class PidMixin():
         pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
         pid_check['redirect_urls'] = response.meta.get('redirect_urls', [])
         pid_check['download_latency'] = response.meta.get('download_latency', 0) * 1000 # Ms
+        pid_check['retry_times'] = response.meta.get('retry_times', 0)
         pid_check['content_type'] = response.headers.get('content-type').decode('ascii')
 
         # Store http status
