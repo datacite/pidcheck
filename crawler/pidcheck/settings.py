@@ -172,3 +172,6 @@ REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 
 # Use other encoding than utf-8 for redis.
 #REDIS_ENCODING = 'latin1'
+
+RETRY_TIMES = 5
+RETRY_HTTP_CODES = [500, 503, 504, 400, 408, 404]
