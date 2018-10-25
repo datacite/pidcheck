@@ -58,10 +58,18 @@ class PidMixin():
 
                 # The schema has two distinct definitions for identifiers,
                 # @id seems to be for usecases where it is a URI only,
-                # however some still suggest using 'identifier'
                 pid_check['schema_org_id'] = pid_check['schema_org'].get('@id')
                 if not pid_check['schema_org_id']:
                     pid_check['schema_org_id'] = pid_check['schema_org'].get('identifier')
+
+                # Further check to see if we actually have PropertyValues in a
+                # list that need extracting
+                if isinstance(pid_check['schema_org_id'], list):
+                    tmp_ids = []
+                    for property in pid_check['schema_org_id']:
+                        if 'value' in property:
+                            tmp_ids.append(property['value'])
+                    pid_check['schema_org_id'] = tmp_ids
 
             # Extract all identifiers listed with dublin core syntax.
             pid_check['dc_identifier'] = response.xpath("//meta[@name='DC.identifier']/@content").extract_first()
