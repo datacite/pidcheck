@@ -21,8 +21,9 @@ formatter = LogstashFormatterV1()
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
 class PidMixin():
-    handle_httpstatus_list = [404] # Tell scrapy to not ignore these codes
+    handle_httpstatus_list = [404]  # Tell scrapy to not ignore these codes
 
     def parse(self, response):
         pid_check = PidCheckResult()
@@ -35,9 +36,11 @@ class PidMixin():
         # Store extra HTTP data from the response
         pid_check['redirect_count'] = response.meta.get('redirect_times', 0)
         pid_check['redirect_urls'] = response.meta.get('redirect_urls', [])
-        pid_check['download_latency'] = response.meta.get('download_latency', 0) * 1000 # Ms
+        pid_check['download_latency'] = response.meta.get(
+            'download_latency', 0) * 1000  # Ms
         pid_check['retry_times'] = response.meta.get('retry_times', 0)
-        pid_check['content_type'] = response.headers.get('content-type').decode('ascii')
+        pid_check['content_type'] = response.headers.get(
+            'content-type').decode('ascii')
 
         # Store http status
         pid_check['http_status'] = response.status
@@ -46,7 +49,8 @@ class PidMixin():
         if response.body and pid_check['content_type'].startswith('text/html'):
             # Extract schema.org json ld
             extractor = JsonLdExtractor()
-            schema_org = extractor.extract(response.body, response.url)
+            schema_org = extractor.extract(
+                response.text, response.url)
 
             pid_check['schema_org_id'] = None
             pid_check['schema_org'] = None
@@ -56,29 +60,52 @@ class PidMixin():
                 # So pick the first out of the list as our schema
                 pid_check['schema_org'] = schema_org[0]
 
+                # At the end we just want one id
+                id = None
+
                 # The schema has two distinct definitions for identifiers,
                 # @id seems to be for usecases where it is a URI only,
-                pid_check['schema_org_id'] = pid_check['schema_org'].get('@id')
-                if not pid_check['schema_org_id']:
-                    pid_check['schema_org_id'] = pid_check['schema_org'].get('identifier')
+                id = pid_check['schema_org'].get('@id')
+                if not id:
+                    identifier = pid_check['schema_org'].get('identifier')
+                    # Schema.org can also just be a regular property object
+                    # Flatten this down and just take it's value.
+                    if identifier and 'value' in identifier:
+                        id = identifier['value']
+                    else:
+                        id = identifier
 
                 # Further check to see if we actually have PropertyValues in a
                 # list that need extracting
-                if isinstance(pid_check['schema_org_id'], list):
+                if not id and isinstance(pid_check['schema_org_id'], list):
                     tmp_ids = []
                     for property in pid_check['schema_org_id']:
                         if 'value' in property:
                             tmp_ids.append(property['value'])
-                    pid_check['schema_org_id'] = tmp_ids
+                    # We're going to cheat here, we only want one PID
+                    # But the problem is sometimes other identifiers are thrown into the mix
+                    # Instead we'll either try and find one that looks like the PID we want if we can't, then take the first.
+                    potentials = [s for s in tmp_ids if pid_check['pid'] in s]
+                    # Multiple potentials get the first
+                    if potentials:
+                        id = len[0]
+                    else:
+                        # Just grab the first one from our original list
+                        id = tmp_ids[0]
+
+                pid_check['schema_org_id'] = id
 
             # Extract all identifiers listed with dublin core syntax.
-            pid_check['dc_identifier'] = response.xpath("//meta[@name='DC.identifier']/@content").extract_first()
+            pid_check['dc_identifier'] = response.xpath(
+                "//meta[@name='DC.identifier']/@content").extract_first()
 
             # Extract citation_doi metadata
-            pid_check['citation_doi'] = response.xpath("//meta[@name='citation_doi']/@content").extract_first()
+            pid_check['citation_doi'] = response.xpath(
+                "//meta[@name='citation_doi']/@content").extract_first()
 
             # Try looking for the pid in the body
-            pid_text = response.xpath("//*[contains(text(), '{0}')]".format(pid_check['pid'])).extract_first()
+            pid_text = response.xpath(
+                "//*[contains(text(), '{0}')]".format(pid_check['pid'])).extract_first()
             pid_check['body_has_pid'] = pid_text != None
 
         yield pid_check
@@ -117,6 +144,7 @@ class PidSpider(PidMixin, RedisSpider):
 
     def make_request_from_data(self, data):
         url = json.loads(bytes_to_str(data, self.redis_encoding))
-        request = scrapy.Request(url=url['url'], callback=self.parse, errback=self.handle_errors)
+        request = scrapy.Request(
+            url=url['url'], callback=self.parse, errback=self.handle_errors)
         request.meta['pid'] = url['pid']
         return request
