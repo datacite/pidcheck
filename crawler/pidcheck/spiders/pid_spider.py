@@ -67,31 +67,33 @@ class PidMixin():
                 # @id seems to be for usecases where it is a URI only,
                 id = pid_check['schema_org'].get('@id')
                 if not id:
+                    # The identifier field is complicated so we'll try and process it.
                     identifier = pid_check['schema_org'].get('identifier')
-                    # Schema.org can also just be a regular property object
-                    # Flatten this down and just take it's value.
-                    if identifier and 'value' in identifier:
+
+                    if isinstance(identifier, list):
+                        # Check to see if we actually have PropertyValues in a
+                        # list that need extracting
+                        tmp_ids = []
+                        for property in identifier:
+                            if 'value' in property:
+                                tmp_ids.append(property['value'])
+                        # We're going to cheat here, we only want one PID
+                        # But the problem is sometimes other identifiers are thrown into the mix
+                        # Instead we'll either try and find one that looks like the PID we want if we can't, then take the first.
+                        potentials = [
+                            s for s in tmp_ids if pid_check['pid'] in s]
+                        # Multiple potentials get the first
+                        if potentials:
+                            id = len[0]
+                        else:
+                            # Just grab the first one from our original list
+                            id = tmp_ids[0]
+                    elif identifier and 'value' in identifier:
+                        # Schema.org can also just be a regular property object
+                        # Flatten this down and just take it's value.
                         id = identifier['value']
                     else:
                         id = identifier
-
-                # Further check to see if we actually have PropertyValues in a
-                # list that need extracting
-                if not id and isinstance(pid_check['schema_org_id'], list):
-                    tmp_ids = []
-                    for property in pid_check['schema_org_id']:
-                        if 'value' in property:
-                            tmp_ids.append(property['value'])
-                    # We're going to cheat here, we only want one PID
-                    # But the problem is sometimes other identifiers are thrown into the mix
-                    # Instead we'll either try and find one that looks like the PID we want if we can't, then take the first.
-                    potentials = [s for s in tmp_ids if pid_check['pid'] in s]
-                    # Multiple potentials get the first
-                    if potentials:
-                        id = len[0]
-                    else:
-                        # Just grab the first one from our original list
-                        id = tmp_ids[0]
 
                 pid_check['schema_org_id'] = id
 
