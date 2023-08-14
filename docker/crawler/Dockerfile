@@ -13,7 +13,7 @@ RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold" &&
     libxslt1-dev zlib1g-dev libffi-dev libssl-dev python3 python3-dev
 
 # Fetch PIP install script and run
-ADD "https://bootstrap.pypa.io/get-pip.py" /tmp/get-pip.py
+ADD "https://bootstrap.pypa.io/pip/3.5/get-pip.py" /tmp/get-pip.py
 RUN python3 /tmp/get-pip.py
 
 # Cleanup
